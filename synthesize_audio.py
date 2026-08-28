@@ -124,7 +124,7 @@ def _synthesize_local(script: str) -> Path:
         for i, (speaker, text) in enumerate(turns):
             seg_path = tmp_path / f"seg_{i:04d}.aiff"
             subprocess.run(
-                ["say", "-v", local_voices[speaker], "-r", "190", "-o", str(seg_path), text],
+                ["say", "-v", local_voices[speaker], "-r", "165", "-o", str(seg_path), text],
                 check=True,
                 capture_output=True,
             )
