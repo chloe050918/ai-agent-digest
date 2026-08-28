@@ -39,7 +39,7 @@ python3 run_daily.py
 也可以单独重跑某一阶段（比如只想重新生成文案，不用重新拉取飞书消息）：
 
 ```bash
-python3 fetch_lark_messages.py   # Phase 1 拉取飞书最近 24h 消息 → output/raw_messages.json
+python3 fetch_lark_messages.py [--hours N]  # Phase 1 拉取飞书最近 N 小时消息（默认24）→ output/raw_messages.json
 python3 extract_content.py       # Phase 2 展开正文（公众号/YouTube/Twitter抓正文，小红书降级） → output/materials.json
 python3 generate_script.py       # Phase 3 生成摘要+对话稿 → output/summary.md + output/script.md
 python3 synthesize_audio.py      # Phase 4 合成音频 → output/episode.mp3

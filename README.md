@@ -27,7 +27,7 @@
 
 ## 目录结构
 
-- `fetch_lark_messages.py` — Phase 1，拉取"AI资讯"会话最近 24 小时消息
+- `fetch_lark_messages.py` — Phase 1，拉取"AI资讯"会话最近 N 小时消息（`--hours` 可调，默认 24）
 - `extract_content.py` — Phase 2，公众号文章抓正文；YouTube 视频拉官方字幕轨道；Twitter/X 用官方 oEmbed 接口取推文正文；小红书链接不抓取（无公开 API，抓取需绕过反爬有封号风险），只用分享自带的标题/摘要文本
 - `generate_script.py` — Phase 3，调用方舟对话模型生成 TL;DR 摘要 + "甲/乙"双人对话稿，小红书这类内容不足的素材会如实说明"仅有标题"，不编造细节
 - `synthesize_audio.py` — Phase 4，逐句调用经典语音合成 2.0（甲=云舟男声/乙=Vivi女声），ffmpeg 按顺序拼接成一期音频

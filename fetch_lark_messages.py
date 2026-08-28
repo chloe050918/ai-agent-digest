@@ -1,6 +1,7 @@
-"""Phase 1: 拉取飞书采集会话最近 24 小时的消息，保存到 output/raw_messages.json"""
+"""Phase 1: 拉取飞书采集会话最近 N 小时的消息（默认 24），保存到 output/raw_messages.json"""
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import subprocess
@@ -55,15 +56,18 @@ def extract_text(message: dict) -> str:
     return " ".join(parts)
 
 
-def fetch(chat_id: str | None = None) -> list[dict]:
+def fetch(chat_id: str | None = None, hours: int = 24) -> list[dict]:
     chat_id = chat_id or config.require(
         config.LARK_CHAT_ID, "LARK_CHAT_ID",
         "在 .env 里填入飞书采集会话的 chat_id（用 lark-cli im +chat-search --query <会话名> 查询）",
     )
     end = datetime.now(TZ)
-    start = end - timedelta(hours=24)
+    start = end - timedelta(hours=hours)
 
-    data = run_lark_cli(chat_id, start, end)
+    resp = run_lark_cli(chat_id, start, end)
+    if not resp.get("ok", True):
+        raise RuntimeError(f"lark-cli 返回错误: {resp}")
+    data = resp.get("data", resp)  # 兼容 {"ok":..,"data":{"messages":[...]}} 和裸 {"messages":[...]}
     items = []
     for msg in data.get("messages", []):
         if msg.get("msg_type") not in ("text", "post"):
@@ -88,4 +92,7 @@ def fetch(chat_id: str | None = None) -> list[dict]:
 
 
 if __name__ == "__main__":
-    fetch()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--hours", type=int, default=24, help="拉取最近 N 小时的消息，默认 24")
+    args = parser.parse_args()
+    fetch(hours=args.hours)
