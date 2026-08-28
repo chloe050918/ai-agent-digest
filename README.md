@@ -4,10 +4,11 @@
 
 ![demo](demo/demo.gif)
 
-上面是 **Codex Agent 真实调用这个 Skill 的完整录屏**（非摆拍脚本）：给它一句"帮我把飞书资讯整理成播客"，
-它自己判断该跑哪几个脚本、遇到沙盒网络封锁时如何诚实降级（不编造内容）、TTS 连不上云端时自动切换本机语音、
-完成后还做了一轮自检（校验音频可解码、脚本轮次、素材去重）。原始录制约 3 分钟，剪掉了中间一段与本任务无关的
-浏览器工具调试输出，其余按 1.5x 播放。
+上面是 **Codex Agent 真实调用这个 Skill 的过程**：给它一句"帮我把飞书资讯整理成播客"，它自己判断该跑哪几个
+脚本、遇到沙盒网络封锁时如何诚实降级（不编造内容）、TTS 连不上云端时自动切换本机语音、完成后还做了一轮自检
+（校验音频可解码、脚本轮次、素材去重）。文字全部是那次真实运行里 Codex 自己说的话，一字未改；为了可读性，
+把工具调用的原始日志（curl/JSON/traceback）折叠成了一行摘要，按对话形式重新排版（`demo/render_demo.sh`）。
+更接近原始终端输出的版本（仅去掉一段无关的浏览器调试日志）在 git 历史的 `379bb51` commit 里。
 
 已打包成 Claude Code Skill（`SKILL.md`），同时软链接在 `~/.claude/skills/ai-agent-digest`
 和 `~/.codex/skills/ai-agent-digest`，Claude Code 和 Codex 都能直接调用。拿到这个文件夹配好 `.env`
@@ -38,7 +39,7 @@
 - `generate_script.py` — Phase 3，调用方舟对话模型生成 TL;DR 摘要 + "甲/乙"双人对话稿，小红书这类内容不足的素材会如实说明"仅有标题"，不编造细节
 - `synthesize_audio.py` — Phase 4，逐句调用经典语音合成 2.0（甲=云舟男声/乙=Vivi女声），ffmpeg 按顺序拼接成一期音频
 - `run_daily.py` — Phase 5，手动触发全链路
-- `demo/` — `session.cast`（asciinema 录制的 Codex Agent 真实调用 Skill 的过程）+ 转出的 `demo.gif`
+- `demo/` — `render_demo.sh`（把真实运行记录重排成对话式展示）+ `session.cast`（该展示的录制）+ `demo.gif`
 - `output/` — 每次运行的中间产物（`raw_messages.json` / `materials.json`）和最终产出 `summary.md` / `script.md` / `episode.mp3`
 
 ## 日常使用
